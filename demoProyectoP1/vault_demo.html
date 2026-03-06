@@ -7,259 +7,47 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --bg: #050810;
-    --panel: #0b0f1e;
-    --border: #1a2240;
-    --accent: #00e5ff;
-    --accent2: #7c3aed;
-    --green: #00ff88;
-    --red: #ff3860;
-    --text: #c8d6f0;
-    --dim: #4a5578;
+    --bg: #050810; --panel: #0b0f1e; --border: #1a2240;
+    --accent: #00e5ff; --accent2: #7c3aed; --green: #00ff88;
+    --red: #ff3860; --text: #c8d6f0; --dim: #4a5578;
     --mono: 'Share Tech Mono', monospace;
     --sans: 'Syne', sans-serif;
   }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-    overflow-x: hidden;
+    background: var(--bg); color: var(--text);
+    font-family: var(--sans); min-height: 100vh; padding-bottom: 3rem;
   }
-
-  /* grid overlay */
   body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image:
-      linear-gradient(rgba(0,229,255,.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,229,255,.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(0,229,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,.03) 1px, transparent 1px);
+    background-size: 40px 40px; pointer-events: none; z-index: -1;
   }
-
-  header {
-    position: relative;
-    padding: 2.5rem 2rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .logo-icon {
-    width: 44px; height: 44px;
-    background: var(--accent);
-    clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-    box-shadow: 0 0 20px rgba(0,229,255,.4);
-    animation: pulse 3s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%,100% { box-shadow: 0 0 20px rgba(0,229,255,.4); }
-    50%      { box-shadow: 0 0 40px rgba(0,229,255,.8); }
-  }
-
-  header h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: .05em; color: #fff; }
-  header p  { font-size: .75rem; color: var(--dim); font-family: var(--mono); margin-top: .2rem; }
-
-  .badge {
-    margin-left: auto;
-    font-family: var(--mono);
-    font-size: .65rem;
-    padding: .25rem .6rem;
-    border: 1px solid var(--accent2);
-    color: var(--accent2);
-    border-radius: 4px;
-    letter-spacing: .1em;
-  }
-
-  main {
-    position: relative; z-index: 1;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  /* ── Tabs ── */
-  .tabs {
-    display: flex;
-    gap: .5rem;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0;
-  }
-  .tab-btn {
-    background: none; border: none; cursor: pointer;
-    font-family: var(--sans); font-weight: 700; font-size: .85rem;
-    color: var(--dim);
-    padding: .6rem 1.2rem;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: color .2s, border-color .2s;
-    letter-spacing: .05em;
-  }
-  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab-btn:hover:not(.active) { color: var(--text); }
-
-  .tab-panel { display: none; }
-  .tab-panel.active { display: flex; flex-direction: column; gap: 1.2rem; }
-
-  /* ── Panel card ── */
-  .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.4rem;
-  }
-  .card-label {
-    font-family: var(--mono);
-    font-size: .7rem;
-    color: var(--accent);
-    letter-spacing: .15em;
-    text-transform: uppercase;
-    margin-bottom: .8rem;
-  }
-
-  /* ── Inputs ── */
-  textarea, input[type=text], input[type=file] {
-    width: 100%;
-    background: #060a18;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: .82rem;
-    padding: .7rem .9rem;
-    outline: none;
-    resize: vertical;
-    transition: border-color .2s;
-  }
-  textarea:focus, input[type=text]:focus { border-color: var(--accent); }
-  textarea { min-height: 110px; }
-
-  label { font-size: .78rem; color: var(--dim); display: block; margin-bottom: .35rem; }
-
-  input[type=file] {
-    padding: .5rem .9rem;
-    cursor: pointer;
-    color: var(--dim);
-  }
-  input[type=file]::file-selector-button {
-    background: var(--accent2);
-    color: #fff;
-    border: none;
-    padding: .35rem .8rem;
-    border-radius: 4px;
-    font-family: var(--sans);
-    font-size: .75rem;
-    cursor: pointer;
-    margin-right: .7rem;
-  }
-
-  /* ── Buttons ── */
-  .btn {
-    font-family: var(--sans); font-weight: 700;
-    font-size: .82rem; letter-spacing: .08em;
-    padding: .65rem 1.4rem;
-    border: none; border-radius: 6px;
-    cursor: pointer; transition: opacity .2s, transform .1s;
-  }
-  .btn:active { transform: scale(.97); }
-  .btn:hover  { opacity: .85; }
-
+  header { padding: 2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+  .logo-icon { width: 44px; height: 44px; background: var(--accent); clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 0 20px rgba(0,229,255,.4); }
+  header h1 { font-size: 1.4rem; font-weight: 800; color: #fff; }
+  header p  { font-size: .8rem; color: var(--dim); font-family: var(--mono); }
+  
+  main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  @media(max-width: 768px) { main { grid-template-columns: 1fr; } }
+  
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .card-title { font-family: var(--mono); color: var(--accent); font-size: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.5rem; }
+  
+  label { font-size: .8rem; color: var(--dim); display: block; margin-bottom: .3rem; }
+  input[type=text], input[type=file] { width: 100%; background: #060a18; border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--mono); font-size: .85rem; padding: .8rem; outline: none; transition: 0.2s; }
+  input[type=text]:focus { border-color: var(--accent); }
+  input[type=file]::file-selector-button { background: var(--accent2); color: #fff; border: none; padding: .4rem .8rem; border-radius: 4px; font-family: var(--sans); font-size: .8rem; cursor: pointer; margin-right: 1rem; }
+  
+  .btn { font-family: var(--sans); font-weight: 700; font-size: .9rem; padding: .8rem 1.2rem; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; width: 100%; }
+  .btn:hover { opacity: 0.9; transform: translateY(-1px); }
   .btn-primary { background: var(--accent); color: #050810; }
-  .btn-danger  { background: var(--red);   color: #fff; }
-  .btn-ghost   {
-    background: transparent;
-    color: var(--accent);
-    border: 1px solid var(--accent);
-  }
-  .btn-sm { font-size: .72rem; padding: .45rem .9rem; }
-
-  .row { display: flex; gap: .7rem; flex-wrap: wrap; align-items: flex-start; }
-
-  /* ── Output / mono blocks ── */
-  .mono-block {
-    background: #03060f;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: .8rem 1rem;
-    font-family: var(--mono);
-    font-size: .75rem;
-    color: var(--green);
-    word-break: break-all;
-    white-space: pre-wrap;
-    max-height: 220px;
-    overflow-y: auto;
-    line-height: 1.6;
-  }
-  .mono-block.error { color: var(--red); }
-  .mono-block.info  { color: var(--accent); }
-
-  /* ── Key display ── */
-  .key-badge {
-    display: flex; align-items: center; gap: .7rem;
-    background: #03060f;
-    border: 1px solid var(--accent2);
-    border-radius: 6px;
-    padding: .7rem 1rem;
-  }
-  .key-badge span {
-    font-family: var(--mono); font-size: .72rem;
-    color: var(--accent2); flex: 1;
-    word-break: break-all;
-  }
-
-  /* ── Test results ── */
-  .test-grid { display: flex; flex-direction: column; gap: .5rem; }
-  .test-row {
-    display: flex; align-items: center; gap: .8rem;
-    padding: .55rem .8rem;
-    border-radius: 6px;
-    background: #03060f;
-    border: 1px solid var(--border);
-    font-family: var(--mono); font-size: .78rem;
-  }
-  .test-row .status { width: 1rem; height: 1rem; border-radius: 50%; flex-shrink: 0; }
-  .test-row .status.pass  { background: var(--green); box-shadow: 0 0 8px var(--green); }
-  .test-row .status.fail  { background: var(--red);   box-shadow: 0 0 8px var(--red); }
-  .test-row .status.idle  { background: var(--dim); }
-
-  /* ── Scrollbar ── */
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
-
-  /* ── Divider label ── */
-  .section-title {
-    font-size: .7rem; font-family: var(--mono);
-    color: var(--dim); letter-spacing: .12em;
-    text-transform: uppercase; margin-bottom: -.3rem;
-  }
-
-  .separator { border: none; border-top: 1px solid var(--border); }
-
-  .alert {
-    padding: .6rem 1rem;
-    border-radius: 6px;
-    font-size: .78rem;
-    font-family: var(--mono);
-  }
-  .alert.ok  { background: rgba(0,255,136,.07); border: 1px solid rgba(0,255,136,.3); color: var(--green); }
-  .alert.err { background: rgba(255,56,96,.07);  border: 1px solid rgba(255,56,96,.3);  color: var(--red); }
-  .alert { display: none; }
-  .alert.visible { display: block; }
-
-  .copy-btn { font-size: .65rem; }
+  .btn-secondary { background: transparent; color: var(--accent2); border: 1px solid var(--accent2); }
+  
+  .result-box { background: #03060f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-family: var(--mono); font-size: .8rem; word-break: break-all; white-space: pre-wrap; margin-top: 1rem; display: none;}
+  .result-box.success { color: var(--green); border-color: var(--green); display: block; }
+  .result-box.error { color: var(--red); border-color: var(--red); display: block; }
+  .key-highlight { color: #fff; background: var(--accent2); padding: 0.4rem 0.8rem; border-radius: 4px; display: block; margin-bottom: 0.5rem; font-size: 0.9rem; text-align: center;}
 </style>
 </head>
 <body>
@@ -267,423 +55,139 @@
 <header>
   <div class="logo-icon">🔐</div>
   <div>
-    <h1>SECURE DIGITAL DOCUMENT VAULT</h1>
-    <p>AES-GCM-256 · Authenticated Encryption · Tamper Detection</p>
+    <h1>VAULT SECURE CORE</h1>
+    <p>AES-GCM-256 | Cifrado de Archivos Reales</p>
   </div>
-  <div class="badge">v1.0 · AEAD</div>
 </header>
 
 <main>
-
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('encrypt')">⬆ Encrypt</button>
-    <button class="tab-btn" onclick="switchTab('decrypt')">⬇ Decrypt</button>
-    <button class="tab-btn" onclick="switchTab('tests')">🧪 Tests</button>
-    <button class="tab-btn" onclick="switchTab('docs')">📄 Design</button>
+  <div class="card">
+    <h2 class="card-title">1. ENCRIPTAR ARCHIVO</h2>
+    <div>
+      <label>Selecciona el archivo a proteger</label>
+      <input type="file" id="enc-file"/>
+    </div>
+    <button class="btn btn-primary" onclick="handleEncrypt()">🔒 Encriptar y Descargar</button>
+    
+    <div id="enc-result" class="result-box"></div>
   </div>
 
-  <!-- ══ ENCRYPT ══ -->
-  <div id="tab-encrypt" class="tab-panel active">
-
-    <div class="card">
-      <div class="card-label">// INPUT</div>
-      <div style="display:flex;flex-direction:column;gap:.9rem">
-        <div>
-          <label>Filename (optional)</label>
-          <input type="text" id="enc-filename" placeholder="document.pdf"/>
-        </div>
-        <div>
-          <label>File content (plain text to encrypt)</label>
-          <textarea id="enc-plaintext" placeholder="Enter your secret document content here..."></textarea>
-        </div>
-        <div class="row">
-          <button class="btn btn-primary" onclick="doEncrypt()">🔒 Encrypt</button>
-          <button class="btn btn-ghost btn-sm" onclick="loadSample()">Load sample</button>
-        </div>
-      </div>
+  <div class="card">
+    <h2 class="card-title">2. DESENCRIPTAR ARCHIVO</h2>
+    <div>
+      <label>Selecciona el Contenedor Vault (.json)</label>
+      <input type="file" id="dec-file" accept=".json"/>
     </div>
-
-    <div id="enc-result" style="display:none; flex-direction:column; gap:1rem;">
-
-      <div class="card">
-        <div class="card-label">// ENCRYPTION KEY — store this securely!</div>
-        <div class="key-badge">
-          <span id="enc-key"></span>
-          <button class="btn btn-ghost btn-sm copy-btn" onclick="copy('enc-key')">Copy</button>
-        </div>
-        <div style="margin-top:.6rem;font-size:.7rem;color:var(--red);font-family:var(--mono)">
-          ⚠ This key is NOT stored in the container. Without it, decryption is impossible.
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">// VAULT CONTAINER</div>
-        <div class="mono-block" id="enc-container"></div>
-        <div class="row" style="margin-top:.8rem">
-          <button class="btn btn-ghost btn-sm" onclick="copyContainer()">Copy container</button>
-          <button class="btn btn-ghost btn-sm" onclick="sendToDecrypt()">→ Send to Decrypt tab</button>
-        </div>
-      </div>
+    <div>
+      <label>Clave de Desencriptación (Base64)</label>
+      <input type="text" id="dec-key" placeholder="Pega la clave de 32 bytes aquí..."/>
     </div>
+    <button class="btn btn-secondary" onclick="handleDecrypt()">🔓 Desencriptar y Descargar</button>
+    
+    <div id="dec-result" class="result-box"></div>
   </div>
-
-  <!-- ══ DECRYPT ══ -->
-  <div id="tab-decrypt" class="tab-panel">
-
-    <div class="card">
-      <div class="card-label">// INPUT</div>
-      <div style="display:flex;flex-direction:column;gap:.9rem">
-        <div>
-          <label>Encryption Key (base64)</label>
-          <input type="text" id="dec-key" placeholder="Paste your AES-256 key here"/>
-        </div>
-        <div>
-          <label>Vault Container (JSON)</label>
-          <textarea id="dec-container" style="min-height:140px" placeholder='Paste the vault container JSON here...'></textarea>
-        </div>
-        <div class="row">
-          <button class="btn btn-primary" onclick="doDecrypt()">🔓 Decrypt</button>
-          <button class="btn btn-danger btn-sm" onclick="tamperTest()">Tamper & Try</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="dec-alert-ok"  class="alert ok">✔ Authentication passed — plaintext recovered.</div>
-    <div id="dec-alert-err" class="alert err">✘ Authentication FAILED — data was tampered or key is wrong.</div>
-
-    <div id="dec-result" class="card" style="display:none">
-      <div class="card-label">// RECOVERED PLAINTEXT</div>
-      <div class="mono-block info" id="dec-plaintext"></div>
-    </div>
-  </div>
-
-  <!-- ══ TESTS ══ -->
-  <div id="tab-tests" class="tab-panel">
-    <div class="card">
-      <div class="card-label">// AUTOMATED TEST SUITE</div>
-      <div class="test-grid" id="test-grid">
-        <div class="test-row"><div class="status idle" id="s0"></div><span>1. Encrypt → Decrypt returns identical file</span></div>
-        <div class="test-row"><div class="status idle" id="s1"></div><span>2. Wrong key fails authentication</span></div>
-        <div class="test-row"><div class="status idle" id="s2"></div><span>3. Modified ciphertext detected</span></div>
-        <div class="test-row"><div class="status idle" id="s3"></div><span>4. Modified metadata (AAD) detected</span></div>
-        <div class="test-row"><div class="status idle" id="s4"></div><span>5. Multiple encryptions produce different ciphertexts</span></div>
-        <div class="test-row"><div class="status idle" id="s5"></div><span>6. Modified auth tag detected</span></div>
-      </div>
-      <div style="margin-top:1rem" class="row">
-        <button class="btn btn-primary" onclick="runTests()">▶ Run All Tests</button>
-      </div>
-      <div class="mono-block" id="test-log" style="margin-top:1rem;display:none"></div>
-    </div>
-  </div>
-
-  <!-- ══ DOCS ══ -->
-  <div id="tab-docs" class="tab-panel">
-    <div class="card">
-      <div class="card-label">// ENCRYPTION DESIGN</div>
-      <div style="font-size:.82rem;line-height:1.8;color:var(--text);display:flex;flex-direction:column;gap:.9rem">
-
-        <p><strong style="color:var(--accent)">Selected AEAD Algorithm:</strong> AES-GCM-256<br>
-        AES in Galois/Counter Mode provides both confidentiality and integrity in a single pass. The 256-bit key offers 128 bits of security against exhaustive search.</p>
-
-        <p><strong style="color:var(--accent)">Key Size:</strong> 256 bits (32 bytes)<br>
-        Generated via <code style="color:var(--green)">AESGCM.generate_key(bit_length=256)</code> which uses OS-provided CSPRNG (<code>os.urandom</code> internally).</p>
-
-        <p><strong style="color:var(--accent)">Nonce Strategy:</strong> 96-bit random nonce per encryption<br>
-        A fresh 12-byte nonce is generated with <code style="color:var(--green)">os.urandom(12)</code> for every encryption call. The nonce is stored alongside the ciphertext in the container.</p>
-
-        <hr class="separator"/>
-
-        <p><strong style="color:var(--accent)">Why AEAD instead of encryption + hash?</strong><br>
-        A naive Encrypt-then-MAC construction requires two separate keys and careful ordering. AES-GCM provides an <em>atomic</em> authenticated encryption: the same operation that produces ciphertext also produces an authentication tag covering both the ciphertext and any associated data (metadata). There is no gap between encryption and authentication where an attacker can insert data.</p>
-
-        <p><strong style="color:var(--accent)">What happens if the nonce repeats?</strong><br>
-        Nonce reuse with the same key in GCM is catastrophic: an attacker can XOR two ciphertexts to eliminate the keystream, recovering the XOR of both plaintexts. Worse, they can forge authentication tags, breaking integrity entirely. This is why each encryption uses a fresh random nonce.</p>
-
-        <p><strong style="color:var(--accent)">Metadata Authentication (AAD):</strong><br>
-        Filename, algorithm version, key size, nonce size, and creation timestamp are serialised as JSON and passed as <em>Associated Authenticated Data</em> (AAD). AES-GCM's authentication tag covers this data, so any silent modification to the metadata causes decryption to fail.</p>
-
-        <p><strong style="color:var(--accent)">Attacker Model:</strong><br>
-        We defend against a <em>ciphertext-only</em> and <em>chosen-ciphertext</em> attacker who has obtained the encrypted container (file at rest) but does not have the key. They may attempt to read, modify, or replay the ciphertext or its metadata. AES-GCM ensures both goals fail: without the key, they cannot decrypt; any modification is detected by the authentication tag.</p>
-
-        <hr class="separator"/>
-
-        <p style="font-family:var(--mono);font-size:.72rem;color:var(--dim)">
-          Container structure: header (metadata + AAD) | nonce (96-bit) | ciphertext | auth_tag (128-bit)<br>
-          Library: cryptography (PyCA) · Python 3.x
-        </p>
-      </div>
-    </div>
-  </div>
-
 </main>
 
 <script>
-// ══════════════════════════════════════════════════════
-//  Pure JS implementation of AES-GCM using WebCrypto API
-//  (mirrors vault_crypto.py behaviour exactly)
-// ══════════════════════════════════════════════════════
+const ALGO = "AES-GCM-256-v1";
+const te = s => new TextEncoder().encode(s);
+const b64e = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 
-const ALGORITHM_VERSION = "AES-GCM-256-v1";
-
-// ── Helpers ──────────────────────────────────────────
-function b64encode(buf) {
-  return btoa(String.fromCharCode(...new Uint8Array(buf)));
-}
-function b64decode(s) {
-  return Uint8Array.from(atob(s), c => c.charCodeAt(0));
-}
-function te(s) { return new TextEncoder().encode(s); }
-function td(b) { return new TextDecoder().decode(b); }
-
-async function generateKey() {
-  return crypto.subtle.generateKey({ name:"AES-GCM", length:256 }, true, ["encrypt","decrypt"]);
-}
-async function exportKey(k) {
-  const raw = await crypto.subtle.exportKey("raw", k);
-  return b64encode(raw);
-}
-async function importKey(b64) {
-  const raw = b64decode(b64);
-  return crypto.subtle.importKey("raw", raw, {name:"AES-GCM"}, true, ["encrypt","decrypt"]);
+// Descargar archivo helper
+function downloadFile(content, fileName, isJson = false) {
+  const blob = isJson ? new Blob([content], { type: 'application/json' }) : new Blob([content]);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
-// ── Encrypt ──────────────────────────────────────────
-async function cryptoEncrypt(plaintextStr, filename = "") {
-  const key   = await generateKey();
-  const keyB64 = await exportKey(key);
-  const nonce  = crypto.getRandomValues(new Uint8Array(12));
-
-  const metadata = {
-    filename,
-    algorithm: ALGORITHM_VERSION,
-    key_size_bits: 256,
-    nonce_size_bits: 96,
-    created_at: new Date().toISOString(),
-  };
-  const aadBytes = te(JSON.stringify(metadata));
-
-  const ptBytes = te(plaintextStr);
-  const ctWithTag = await crypto.subtle.encrypt(
-    { name:"AES-GCM", iv: nonce, additionalData: aadBytes, tagLength: 128 },
-    key, ptBytes
-  );
-
-  const ctArr  = new Uint8Array(ctWithTag);
-  const ct     = ctArr.slice(0, -16);
-  const tag    = ctArr.slice(-16);
-
-  return {
-    header: {
-      metadata,
-      aad_b64: b64encode(aadBytes),
-    },
-    nonce_b64:      b64encode(nonce),
-    ciphertext_b64: b64encode(ct),
-    auth_tag_b64:   b64encode(tag),
-    _key_b64: keyB64,
-  };
-}
-
-// ── Decrypt ──────────────────────────────────────────
-async function cryptoDecrypt(container, keyB64) {
-  const key    = await importKey(keyB64);
-  const nonce  = b64decode(container.nonce_b64);
-  const ct     = b64decode(container.ciphertext_b64);
-  const tag    = b64decode(container.auth_tag_b64);
-  const aad    = b64decode(container.header.aad_b64);
-
-  const ctWithTag = new Uint8Array(ct.length + tag.length);
-  ctWithTag.set(ct); ctWithTag.set(tag, ct.length);
-
+async function handleEncrypt() {
+  const fileInput = document.getElementById('enc-file');
+  const resBox = document.getElementById('enc-result');
+  
+  if (!fileInput.files.length) {
+    resBox.className = 'result-box error';
+    resBox.innerHTML = '⚠️ Por favor selecciona un archivo.';
+    return;
+  }
+  
+  const file = fileInput.files[0];
+  const arrayBuffer = await file.arrayBuffer();
+  
   try {
-    const pt = await crypto.subtle.decrypt(
-      { name:"AES-GCM", iv: nonce, additionalData: aad, tagLength: 128 },
+    const key = await crypto.subtle.generateKey({name:"AES-GCM", length:256}, true, ["encrypt","decrypt"]);
+    const keyB64 = b64e(await crypto.subtle.exportKey("raw", key));
+    const nonce = crypto.getRandomValues(new Uint8Array(12));
+    
+    const metadata = { filename: file.name, algorithm: ALGO, key_size_bits: 256, nonce_size_bits: 96, created_at: new Date().toISOString() };
+    const aadBytes = te(JSON.stringify(metadata));
+    
+    const ctWithTag = await crypto.subtle.encrypt({name:"AES-GCM", iv: nonce, additionalData: aadBytes, tagLength: 128}, key, arrayBuffer);
+    const ctArr = new Uint8Array(ctWithTag);
+    
+    const container = {
+      header: { metadata, aad_b64: b64e(aadBytes) },
+      nonce_b64: b64e(nonce),
+      ciphertext_b64: b64e(ctArr.slice(0, -16)),
+      auth_tag_b64: b64e(ctArr.slice(-16))
+    };
+    
+    // Descargar el JSON
+    const jsonString = JSON.stringify(container, null, 2);
+    downloadFile(jsonString, `${file.name}.vault.json`, true);
+    
+    resBox.className = 'result-box success';
+    resBox.innerHTML = `✅ Archivo cifrado con éxito.\nSe ha descargado el contenedor (.json).\n\n<span class="key-highlight">🔑 GUARDA ESTA CLAVE: <br>${keyB64}</span>\nSi la pierdes, el archivo será irrecuperable.`;
+    
+  } catch(e) {
+    resBox.className = 'result-box error';
+    resBox.innerHTML = `❌ Error al cifrar: ${e.message}`;
+  }
+}
+
+async function handleDecrypt() {
+  const fileInput = document.getElementById('dec-file');
+  const keyStr = document.getElementById('dec-key').value.trim();
+  const resBox = document.getElementById('dec-result');
+  
+  if (!fileInput.files.length || !keyStr) {
+    resBox.className = 'result-box error';
+    resBox.innerHTML = '⚠️ Selecciona el archivo JSON e ingresa la clave.';
+    return;
+  }
+  
+  const file = fileInput.files[0];
+  const fileText = await file.text();
+  
+  try {
+    const container = JSON.parse(fileText);
+    const key = await crypto.subtle.importKey("raw", b64d(keyStr), {name:"AES-GCM"}, true, ["encrypt","decrypt"]);
+    
+    const ct = b64d(container.ciphertext_b64);
+    const tag = b64d(container.auth_tag_b64);
+    const ctWithTag = new Uint8Array(ct.length + tag.length);
+    ctWithTag.set(ct); ctWithTag.set(tag, ct.length);
+    
+    const ptBuffer = await crypto.subtle.decrypt(
+      {name:"AES-GCM", iv: b64d(container.nonce_b64), additionalData: b64d(container.header.aad_b64), tagLength: 128},
       key, ctWithTag
     );
-    return td(pt);
-  } catch {
-    throw new Error("Authentication failed — data may have been tampered with.");
-  }
-}
-
-// ══ UI ═══════════════════════════════════════════════
-let lastContainer = null;
-
-function switchTab(t) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-'+t).classList.add('active');
-  event.target.classList.add('active');
-}
-
-function copy(id) {
-  navigator.clipboard.writeText(document.getElementById(id).textContent);
-}
-function copyContainer() {
-  navigator.clipboard.writeText(document.getElementById('enc-container').textContent);
-}
-
-function loadSample() {
-  document.getElementById('enc-filename').value = 'contrato_confidencial.txt';
-  document.getElementById('enc-plaintext').value =
-    'CONFIDENCIAL\n\nEste documento contiene información sensible sobre el Proyecto Vault.\n\nFirma digital requerida antes de distribución.\n\n— Equipo de Ciberseguridad';
-}
-
-async function doEncrypt() {
-  const pt  = document.getElementById('enc-plaintext').value.trim();
-  const fn  = document.getElementById('enc-filename').value.trim();
-  if (!pt) return alert('Enter content to encrypt.');
-
-  const container = await cryptoEncrypt(pt, fn);
-  lastContainer   = container;
-
-  document.getElementById('enc-key').textContent = container._key_b64;
-
-  const display = Object.fromEntries(
-    Object.entries(container).filter(([k]) => k !== '_key_b64')
-  );
-  document.getElementById('enc-container').textContent =
-    JSON.stringify(display, null, 2);
-
-  document.getElementById('enc-result').style.display = 'flex';
-}
-
-function sendToDecrypt() {
-  if (!lastContainer) return;
-  const display = Object.fromEntries(
-    Object.entries(lastContainer).filter(([k]) => k !== '_key_b64')
-  );
-  document.getElementById('dec-key').value = lastContainer._key_b64;
-  document.getElementById('dec-container').value = JSON.stringify(display, null, 2);
-  // switch tab
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-decrypt').classList.add('active');
-  document.querySelectorAll('.tab-btn')[1].classList.add('active');
-}
-
-function showAlert(id, show) {
-  ['dec-alert-ok','dec-alert-err'].forEach(i => {
-    document.getElementById(i).classList.remove('visible');
-  });
-  if (id) document.getElementById(id).classList.add('visible');
-}
-
-async function doDecrypt() {
-  const keyB64 = document.getElementById('dec-key').value.trim();
-  const raw    = document.getElementById('dec-container').value.trim();
-  if (!keyB64 || !raw) return alert('Provide both key and container.');
-
-  let container;
-  try { container = JSON.parse(raw); } catch { return alert('Invalid JSON container.'); }
-
-  try {
-    const pt = await cryptoDecrypt(container, keyB64);
-    showAlert('dec-alert-ok');
-    document.getElementById('dec-plaintext').textContent = pt;
-    document.getElementById('dec-result').style.display = 'block';
+    
+    // Recuperar el nombre original o dar uno genérico
+    const originalName = container.header.metadata.filename || 'documento_descifrado.bin';
+    downloadFile(ptBuffer, originalName);
+    
+    resBox.className = 'result-box success';
+    resBox.innerHTML = `✅ DESCIFRADO EXITOSO:\nSe ha descargado tu archivo original (${originalName}).`;
+    
   } catch (e) {
-    showAlert('dec-alert-err');
-    document.getElementById('dec-result').style.display = 'none';
+    resBox.className = 'result-box error';
+    resBox.innerHTML = `❌ FALLO DE AUTENTICACIÓN:\nDatos manipulados, contenedor corrupto o clave incorrecta.`;
   }
-}
-
-async function tamperTest() {
-  const raw = document.getElementById('dec-container').value.trim();
-  if (!raw) return alert('Paste a container first.');
-  let c;
-  try { c = JSON.parse(raw); } catch { return alert('Invalid JSON.'); }
-  // flip first byte of ciphertext
-  const ct = Array.from(b64decode(c.ciphertext_b64));
-  ct[0] ^= 0xFF;
-  c.ciphertext_b64 = b64encode(new Uint8Array(ct));
-  document.getElementById('dec-container').value = JSON.stringify(c, null, 2);
-  alert('Ciphertext tampered! Now click Decrypt to see detection.');
-}
-
-// ── Tests ──────────────────────────────────────────
-async function runTests() {
-  const log = document.getElementById('test-log');
-  log.style.display = 'block';
-  log.textContent = '';
-  const results = [];
-
-  function setStatus(i, pass) {
-    const el = document.getElementById('s'+i);
-    el.className = 'status ' + (pass ? 'pass' : 'fail');
-    results.push(pass);
-  }
-  function append(line) { log.textContent += line + '\n'; }
-
-  const SAMPLE = "Secret test payload 🔐";
-
-  // 1. Round-trip
-  try {
-    const c  = await cryptoEncrypt(SAMPLE, "test.txt");
-    const pt = await cryptoDecrypt(c, c._key_b64);
-    const ok = pt === SAMPLE;
-    setStatus(0, ok);
-    append(`[1] ${ok ? 'PASS' : 'FAIL'} — Encrypt→Decrypt roundtrip`);
-  } catch(e) { setStatus(0,false); append(`[1] FAIL — ${e.message}`); }
-
-  // 2. Wrong key
-  try {
-    const c   = await cryptoEncrypt(SAMPLE);
-    const wk  = await exportKey(await generateKey());
-    let failed = false;
-    try { await cryptoDecrypt(c, wk); } catch { failed = true; }
-    setStatus(1, failed);
-    append(`[2] ${failed?'PASS':'FAIL'} — Wrong key rejected`);
-  } catch(e) { setStatus(1,false); append(`[2] FAIL — ${e.message}`); }
-
-  // 3. Modified ciphertext
-  try {
-    const c = await cryptoEncrypt(SAMPLE);
-    const t = JSON.parse(JSON.stringify(c));
-    const ct = Array.from(b64decode(t.ciphertext_b64)); ct[0]^=0xFF;
-    t.ciphertext_b64 = b64encode(new Uint8Array(ct));
-    let failed = false;
-    try { await cryptoDecrypt(t, c._key_b64); } catch { failed = true; }
-    setStatus(2, failed);
-    append(`[3] ${failed?'PASS':'FAIL'} — Modified ciphertext detected`);
-  } catch(e) { setStatus(2,false); append(`[3] FAIL — ${e.message}`); }
-
-  // 4. Modified metadata (AAD)
-  try {
-    const c = await cryptoEncrypt(SAMPLE);
-    const t = JSON.parse(JSON.stringify(c));
-    const aad = Array.from(b64decode(t.header.aad_b64)); aad[0]^=0x01;
-    t.header.aad_b64 = b64encode(new Uint8Array(aad));
-    let failed = false;
-    try { await cryptoDecrypt(t, c._key_b64); } catch { failed = true; }
-    setStatus(3, failed);
-    append(`[4] ${failed?'PASS':'FAIL'} — Modified metadata (AAD) detected`);
-  } catch(e) { setStatus(3,false); append(`[4] FAIL — ${e.message}`); }
-
-  // 5. Different ciphertexts
-  try {
-    const c1 = await cryptoEncrypt(SAMPLE);
-    const c2 = await cryptoEncrypt(SAMPLE);
-    const ok = c1.nonce_b64 !== c2.nonce_b64 && c1.ciphertext_b64 !== c2.ciphertext_b64;
-    setStatus(4, ok);
-    append(`[5] ${ok?'PASS':'FAIL'} — Multiple encryptions differ`);
-  } catch(e) { setStatus(4,false); append(`[5] FAIL — ${e.message}`); }
-
-  // 6. Modified auth tag
-  try {
-    const c = await cryptoEncrypt(SAMPLE);
-    const t = JSON.parse(JSON.stringify(c));
-    const tag = Array.from(b64decode(t.auth_tag_b64)); tag[0]^=0xAA;
-    t.auth_tag_b64 = b64encode(new Uint8Array(tag));
-    let failed = false;
-    try { await cryptoDecrypt(t, c._key_b64); } catch { failed = true; }
-    setStatus(5, failed);
-    append(`[6] ${failed?'PASS':'FAIL'} — Modified auth tag detected`);
-  } catch(e) { setStatus(5,false); append(`[6] FAIL — ${e.message}`); }
-
-  const passed = results.filter(Boolean).length;
-  append(`\n${passed}/${results.length} tests passed.`);
-  if(passed===results.length) append("✔ All tests passed!");
 }
 </script>
 </body>
