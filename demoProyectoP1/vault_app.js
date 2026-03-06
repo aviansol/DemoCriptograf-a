@@ -1,161 +1,104 @@
-// vault_app.js
-// Lógica criptográfica y de interfaz para Secure Digital Document Vault
+// vault_app.js - Adaptado a la lógica de Python (Hexadecimal)
 
-const ALGO = "AES-GCM-256-v1";
 const te = s => new TextEncoder().encode(s);
-const b64e = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
-const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const td = b => new TextDecoder().decode(b);
 
-// --- SISTEMA DE LOGS DE AUDITORÍA ---
+// Funciones para convertir de ArrayBuffer a Hexadecimal (igual que .hex() en Python)
+const bufToHex = buf => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+const hexToBuf = hex => new Uint8Array(hex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
 function logEvent(message, type = 'info') {
-  const logBox = document.getElementById('audit-log');
-  if (!logBox) return; // Por si el contenedor no existe aún
-  
-  const now = new Date();
-  const timeStr = now.toLocaleTimeString() + '.' + now.getMilliseconds().toString().padStart(3, '0');
-  
-  const div = document.createElement('div');
-  div.className = `log-entry log-${type}`;
-  div.innerHTML = `<span class="log-time">[${timeStr}]</span> ${message}`;
-  
-  // Agrega al principio (arriba)
-  logBox.prepend(div);
+    const logBox = document.getElementById('audit-log');
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString();
+    const div = document.createElement('div');
+    div.className = `log-entry log-${type}`;
+    div.innerHTML = `<span class="log-time">[${timeStr}]</span> ${message}`;
+    logBox.prepend(div);
 }
 
-// --- HELPER PARA DESCARGAR ARCHIVOS ---
-function downloadFile(content, fileName, isJson = false) {
-  const blob = isJson ? new Blob([content], { type: 'application/json' }) : new Blob([content]);
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  logEvent(`Descarga iniciada para el archivo: ${fileName}`, 'info');
-}
-
-// --- LÓGICA DE ENCRIPTACIÓN ---
 async function handleEncrypt() {
-  const fileInput = document.getElementById('enc-file');
-  const resBox = document.getElementById('enc-result');
-  
-  if (!fileInput.files.length) {
-    logEvent('Intento de cifrado fallido: No se seleccionó archivo.', 'error');
-    resBox.className = 'result-box error';
-    resBox.innerHTML = '⚠️ Por favor selecciona un archivo.';
-    return;
-  }
-  
-  const file = fileInput.files[0];
-  const arrayBuffer = await file.arrayBuffer();
-  logEvent(`Iniciando cifrado AES-GCM para: ${file.name} (${file.size} bytes)`, 'info');
-  
-  try {
-    // 1. Generación de clave
-    const key = await crypto.subtle.generateKey({name:"AES-GCM", length:256}, true, ["encrypt","decrypt"]);
-    const keyB64 = b64e(await crypto.subtle.exportKey("raw", key));
-    logEvent('Clave criptográfica de 256 bits generada (Aleatoriedad OS-Level).', 'success');
+    const fileInput = document.getElementById('enc-file');
+    if (!fileInput.files.length) return alert("Selecciona un archivo");
 
-    // 2. Generación de Nonce
-    const nonce = crypto.getRandomValues(new Uint8Array(12));
-    logEvent('Nonce criptográfico de 96 bits generado.', 'success');
-    
-    // 3. Metadatos (AAD)
-    const metadata = { 
-        filename: file.name, 
-        algorithm: ALGO, 
-        key_size_bits: 256, 
-        nonce_size_bits: 96, 
-        created_at: new Date().toISOString() 
-    };
-    const aadBytes = te(JSON.stringify(metadata));
-    
-    // 4. Cifrado
-    const ctWithTag = await crypto.subtle.encrypt(
-        {name:"AES-GCM", iv: nonce, additionalData: aadBytes, tagLength: 128}, 
-        key, 
-        arrayBuffer
-    );
-    const ctArr = new Uint8Array(ctWithTag);
-    logEvent(`Cifrado completado. Auth Tag (128 bits) adherida.`, 'success');
-    
-    // 5. Construcción del contenedor
-    const container = {
-      header: { metadata, aad_b64: b64e(aadBytes) },
-      nonce_b64: b64e(nonce),
-      ciphertext_b64: b64e(ctArr.slice(0, -16)),
-      auth_tag_b64: b64e(ctArr.slice(-16))
-    };
-    
-    // 6. Descarga y actualización de UI
-    const jsonString = JSON.stringify(container, null, 2);
-    downloadFile(jsonString, `${file.name}.vault.json`, true);
-    logEvent('Contenedor Vault construido y exportado exitosamente.', 'success');
-    
-    resBox.className = 'result-box success';
-    resBox.innerHTML = `✅ Archivo cifrado con éxito.\nSe ha descargado el contenedor (.json).\n\n<span class="key-highlight">🔑 GUARDA ESTA CLAVE: <br>${keyB64}</span>\nSi la pierdes, el archivo será irrecuperable.`;
-    
-  } catch(e) {
-    logEvent(`Error crítico durante el cifrado: ${e.message}`, 'error');
-    resBox.className = 'result-box error';
-    resBox.innerHTML = `❌ Error al cifrar: ${e.message}`;
-  }
+    const file = fileInput.files[0];
+    const data = await file.arrayBuffer();
+
+    try {
+        // Generar clave de 256 bits (como tu generate_key en Python)
+        const key = await crypto.subtle.generateKey({name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"]);
+        const rawKey = await crypto.subtle.exportKey("raw", key);
+        const keyHex = bufToHex(rawKey);
+
+        const nonce = crypto.getRandomValues(new Uint8Array(12));
+        
+        // Metadatos exactos a tu código Python
+        const metadata = {
+            "filename": file.name,
+            "algorithm": "AES-GCM",
+            "version": "1.0",
+            "timestamp": Math.floor(Date.now() / 1000)
+        };
+        const aad = te(JSON.stringify(metadata));
+
+        const encrypted = await crypto.subtle.encrypt(
+            { name: "AES-GCM", iv: nonce, additionalData: aad },
+            key,
+            data
+        );
+
+        const encryptedArr = new Uint8Array(encrypted);
+        const ciphertext = encryptedArr.slice(0, -16);
+        const tag = encryptedArr.slice(-16);
+
+        // Estructura de contenedor IDÉNTICA a tu Python
+        const container = {
+            "header": metadata,
+            "nonce": bufToHex(nonce),
+            "ciphertext": bufToHex(encryptedArr) // WebCrypto incluye el tag al final del ciphertext
+        };
+
+        const blob = new Blob([JSON.stringify(container, null, 4)], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name + ".vault.json";
+        a.click();
+
+        logEvent(`Archivo cifrado: ${file.name}`, 'success');
+        document.getElementById('enc-result').style.display = 'block';
+        document.getElementById('enc-result').innerHTML = `<strong>CLAVE HEX (Guárdala):</strong><br><code style="word-break:break-all">${keyHex}</code>`;
+    } catch (e) {
+        logEvent("Error: " + e.message, 'error');
+    }
 }
 
-// --- LÓGICA DE DESENCRIPTACIÓN ---
 async function handleDecrypt() {
-  const fileInput = document.getElementById('dec-file');
-  const keyStr = document.getElementById('dec-key').value.trim();
-  const resBox = document.getElementById('dec-result');
-  
-  if (!fileInput.files.length || !keyStr) {
-    logEvent('Intento de descifrado fallido: Faltan datos (archivo o clave).', 'error');
-    resBox.className = 'result-box error';
-    resBox.innerHTML = '⚠️ Selecciona el archivo JSON e ingresa la clave.';
-    return;
-  }
-  
-  const file = fileInput.files[0];
-  const fileText = await file.text();
-  logEvent(`Iniciando lectura de contenedor: ${file.name}`, 'info');
-  
-  try {
-    // 1. Parseo del JSON
-    const container = JSON.parse(fileText);
-    logEvent('Estructura JSON parseada correctamente. Extrayendo Metadatos (AAD).', 'info');
+    const fileInput = document.getElementById('dec-file');
+    const keyHex = document.getElementById('dec-key').value.trim();
+    if (!fileInput.files.length || !keyHex) return alert("Faltan datos");
 
-    // 2. Importar Clave
-    const key = await crypto.subtle.importKey("raw", b64d(keyStr), {name:"AES-GCM"}, true, ["encrypt","decrypt"]);
-    
-    // 3. Reensamblar Ciphertext y Auth Tag
-    const ct = b64d(container.ciphertext_b64);
-    const tag = b64d(container.auth_tag_b64);
-    const ctWithTag = new Uint8Array(ct.length + tag.length);
-    ctWithTag.set(ct); 
-    ctWithTag.set(tag, ct.length);
-    
-    logEvent('Iniciando proceso de autenticación de etiqueta (Tamper Check)...', 'warning');
-    
-    // 4. Descifrado y Verificación de Integridad
-    const ptBuffer = await crypto.subtle.decrypt(
-      {name:"AES-GCM", iv: b64d(container.nonce_b64), additionalData: b64d(container.header.aad_b64), tagLength: 128},
-      key, 
-      ctWithTag
-    );
-    
-    logEvent('¡Autenticación exitosa! Integridad comprobada.', 'success');
-    
-    // 5. Recuperar nombre original y descargar
-    const originalName = container.header.metadata.filename || 'documento_descifrado.bin';
-    downloadFile(ptBuffer, originalName);
-    logEvent(`Archivo original recuperado: ${originalName}`, 'success');
-    
-    resBox.className = 'result-box success';
-    resBox.innerHTML = `✅ DESCIFRADO EXITOSO:\nSe ha descargado tu archivo original (${originalName}).`;
-    
-  } catch (e) {
-    logEvent('🚨 ALERTA DE SEGURIDAD: Fallo de autenticación. Posible manipulación de datos (Tamper) o clave incorrecta.', 'error');
-    resBox.className = 'result-box error';
-    resBox.innerHTML = `❌ FALLO DE AUTENTICACIÓN:\nDatos manipulados, contenedor corrupto o clave incorrecta.`;
-  }
+    try {
+        const container = JSON.parse(await fileInput.files[0].text());
+        const key = await crypto.subtle.importKey("raw", hexToBuf(keyHex), {name: "AES-GCM"}, true, ["decrypt"]);
+        
+        const nonce = hexToBuf(container.nonce);
+        const ciphertext = hexToBuf(container.ciphertext);
+        const aad = te(JSON.stringify(container.header));
+
+        const decrypted = await crypto.subtle.decrypt(
+            { name: "AES-GCM", iv: nonce, additionalData: aad },
+            key,
+            ciphertext
+        );
+
+        const blob = new Blob([decrypted]);
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = container.header.filename;
+        a.click();
+        logEvent("Archivo descifrado correctamente", 'success');
+    } catch (e) {
+        logEvent("ERROR: autenticación fallida. El archivo pudo ser manipulado.", 'error');
+    }
 }
